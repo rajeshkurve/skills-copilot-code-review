@@ -855,6 +855,33 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // Announcement banner dismissal and persistence
+  (function initAnnouncementBanner() {
+    const banner = document.querySelector('.announcement-banner');
+    if (!banner) return;
+    const dismissBtn = banner.querySelector('.dismiss-announcement');
+
+    // Hide if previously dismissed
+    try {
+      if (localStorage.getItem('announcementDismissed') === '1') {
+        banner.classList.add('hidden');
+        banner.setAttribute('aria-hidden', 'true');
+      }
+    } catch (e) {
+      // localStorage may be unavailable (privacy mode), ignore errors
+      console.warn('localStorage unavailable for announcement dismissal', e);
+    }
+
+    if (!dismissBtn) return;
+    dismissBtn.addEventListener('click', () => {
+      banner.classList.add('hidden');
+      banner.setAttribute('aria-hidden', 'true');
+      try {
+        localStorage.setItem('announcementDismissed', '1');
+      } catch (e) {}
+    });
+  })();
+
   // Expose filter functions to window for future UI control
   window.activityFilters = {
     setDayFilter,
